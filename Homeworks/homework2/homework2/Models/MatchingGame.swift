@@ -1,22 +1,27 @@
-// MODEL
-//  MemoryGame.swift
-//  Memorize
 //
-//  Created by Connor Cole on 8/4/21.
+//  MatchingGame.swift
+//  homework2
+//
+//  Created by Connor Cole on 8/5/21.
 //
 
 import Foundation
 
-struct MemoryGame<CardContent> where CardContent: Equatable {
+struct MatchingGame<CardContent> where CardContent : Equatable {
     private (set) var cards: Array<Card>
     private var indexOfFaceUpCard: Int?
-    
-    mutating func choose(_ card: Card) {
-        if let chosenIndex = cards.firstIndex(where: { $0.id == card.id}),!cards[chosenIndex].isFaceUp, !cards[chosenIndex].isMatched{
+    private (set) var score: Int
+
+    mutating func choose (_ card: Card) {
+        if let chosenIndex = cards.firstIndex(where: { $0.id == card.id}),!cards[chosenIndex].isFaceUp, !cards[chosenIndex].isMatched
+        {
             if let potentialMatchIndex = indexOfFaceUpCard {
                 if cards[chosenIndex].content == cards[potentialMatchIndex].content {
                     cards[chosenIndex].isMatched = true
                     cards[potentialMatchIndex].isMatched = true
+                    score += 2
+                } else {
+                    score -= 1
                 }
                 indexOfFaceUpCard = nil
             } else {
@@ -31,22 +36,18 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     }
     
     
-//    func index(of card: Card) -> Int? {
-//        for index in 0..<cards.count {
-//            if cards[index].id == card.id {
-//                return index
-//            }
-//        }
-//        return nil
-//    }
     
-    init(numberOfPairsOfCards: Int, createCardContent: (Int) -> CardContent) {
+    init(numberOfPairs: Int, createCardContent: (Int) -> CardContent) {
         cards = Array<Card>()
-        for i in 0..<numberOfPairsOfCards {
+        score = 0
+        
+        for i in 0..<numberOfPairs {
             let content = createCardContent(i)
             cards.append(Card(content: content, id: i * 2))
             cards.append(Card(content: content, id: i * 2 + 1))
         }
+        
+        cards.shuffle()
     }
     
     struct Card: Identifiable {
@@ -55,4 +56,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         var content: CardContent
         var id: Int
     }
+
 }
+
+
