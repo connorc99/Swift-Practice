@@ -87,8 +87,12 @@ struct GuessingGame {
             }
             cards.remove(at: 0)
             cards.remove(at: 0)
-            currentCard = cards[0]
-            nextCard = cards[1]
+            if cards.endIndex >= 2 {
+                currentCard = cards[0]
+                nextCard = cards[1]
+            } else {
+                endOfDeck = true
+            }
         } 
     }
     
