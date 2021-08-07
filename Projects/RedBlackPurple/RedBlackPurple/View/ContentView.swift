@@ -17,15 +17,18 @@ struct ContentView: View {
                 .ignoresSafeArea()
                 .opacity(Double(viewModel.currentStreakValue) / 10)
             VStack {
-                NewDeckView(endOfDeckReached: viewModel.endOfDeckReached)
-                    .onTapGesture {
-                        viewModel.createNewDeck()
-                    }
-                
-                PlayerView(streak: viewModel.currentStreakValue, streakType: viewModel.currentStreakType, remainingCards: viewModel.cards.endIndex - 1)
+                VStack {
+                    NewDeckView(endOfDeckReached: viewModel.endOfDeckReached)
+                        .frame(minWidth: 100, idealWidth: .infinity, maxWidth: .infinity, minHeight: 50, idealHeight: 50, maxHeight: 50, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        .onTapGesture {
+                            viewModel.createNewDeck()
+                        }
+                    
+                    PlayerView(streak: viewModel.currentStreakValue, streakType: viewModel.currentStreakType, remainingCards: viewModel.cards.endIndex - 1)
+                }
                 
                 CardView(cards: viewModel.cardsToDisplay, cardColors: viewModel.getCardColors)
-                    .frame(minWidth: 300, minHeight: 500, idealHeight: .infinity, maxHeight: .infinity, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                    .frame(minWidth: 300, minHeight: 400, idealHeight: .infinity, maxHeight: .infinity, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                 
                 
                 HStack {
@@ -38,7 +41,8 @@ struct ContentView: View {
                     GuessView(color: "Purple", cardColor: Color.purple).onTapGesture {
                         viewModel.guess("Purple")
                     }
-                }.padding()
+                }
+                .padding([.leading, .bottom, .trailing])
             }
         }
     }
@@ -55,8 +59,12 @@ struct NewDeckView: View {
     let endOfDeckReached : Bool
     var body: some View {
         let newDeckText = Text("New Deck")
+            .font(.headline)
+            .fontWeight(.semibold)
+            .foregroundColor(Color.black)
+            .padding(/*@START_MENU_TOKEN@*/[.top, .leading, .trailing]/*@END_MENU_TOKEN@*/, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
         let newDeckButton = RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)
-            .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+            .padding([.top, .leading, .trailing], /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
             .frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealWidth: .infinity, maxWidth: .infinity, minHeight: 50, idealHeight: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, maxHeight: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
         if endOfDeckReached {
             ZStack{
@@ -80,13 +88,13 @@ struct PlayerView: View {
     var body: some View {
         VStack {
             Text("Current Streak")
-                .font(.title)
+                .font(.title3)
                 .fontWeight(.bold)
             Text("\(streakType): \(streak)")
-                .font(.headline)
+                .font(.subheadline)
                 .fontWeight(.semibold)
             Text("Remaining: \(remainingCards)")
-                .font(.headline)
+                .font(.subheadline)
                 .fontWeight(.semibold)
         }
     }
