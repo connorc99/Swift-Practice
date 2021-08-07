@@ -14,10 +14,18 @@ struct GuessingGame {
     
     private (set) var nextCard: Card //non displayed card
     private (set) var currentStreak: Streak = Streak()
-    private (set) var guessWasPurple = false
+    
+    private (set) var endOfDeck: Bool = false
+    
     
     init() {
-        cards = Array<Card>()
+        cards = GuessingGame.createNewDeck()
+        currentCard = cards[0]
+        nextCard = cards[1]
+    }
+    
+    static func createNewDeck() -> Array<Card> {
+        var cards = Array<Card>()
         for i in Suit.allCases {
             for j in 1...13 {
                 let card = Card(cardSuite: i, cardFaceValue: j, id:"\(i):\(j)")
@@ -25,17 +33,23 @@ struct GuessingGame {
             }
         }
         cards.shuffle()
-        currentCard = cards[0]
-        nextCard = cards[1]
+        return cards
     }
     
     mutating func shuffle() {
         cards.shuffle()
     }
     
+    mutating func createNewGameDeck() {
+        cards = GuessingGame.createNewDeck()
+        currentCard = cards[0]
+        nextCard = cards[1]
+        endOfDeck = false
+    }
+    
+    
     mutating func guess(_ color: String) {
-        if (color != "Purple") {
-            guessWasPurple = false
+        if (color != "Purple" && !endOfDeck) {
             secondCardToShow = nil
             if (color == "Red") {
                 if (nextCard.cardSuite == Suit.hearts || nextCard.cardSuite == Suit.diamonds) {
@@ -53,9 +67,12 @@ struct GuessingGame {
             }
             cards.remove(at: 0)
             currentCard = cards[0]
-            nextCard = cards[1]
-        } else {
-            guessWasPurple = true
+            if cards.endIndex > 1 {
+                nextCard = cards[1]
+            } else {
+                endOfDeck = true
+            }
+        } else if (cards.endIndex >= 3 && !endOfDeck) {
             secondCardToShow = cards[1]
             let firstCard = nextCard
             let secondCard = cards[2]
@@ -72,11 +89,7 @@ struct GuessingGame {
             cards.remove(at: 0)
             currentCard = cards[0]
             nextCard = cards[1]
-        }
-        
-
-        
-        
+        } 
     }
     
     mutating func updateStreak(guessWasCorrect: Bool) {

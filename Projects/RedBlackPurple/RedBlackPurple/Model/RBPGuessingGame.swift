@@ -9,6 +9,7 @@ import SwiftUI
 
 class RPBGuessingGame: ObservableObject {
     @Published private var model: GuessingGame = createRBPGame()
+    @Published private var backgroundColor: Color = Color.green
     
     static func createRBPGame() -> GuessingGame {
         return GuessingGame()
@@ -27,7 +28,14 @@ class RPBGuessingGame: ObservableObject {
         }
     }
     
-
+    
+    var getBackgroundColorFromGuess: Color {
+        return backgroundColor
+    }
+    
+    var endOfDeckReached: Bool {
+        return model.endOfDeck
+    }
     
     var currentCard: GuessingGame.Card {
         return model.currentCard
@@ -72,6 +80,15 @@ class RPBGuessingGame: ObservableObject {
     
     func guess(_ color: String) {
         model.guess(color)
+        if model.currentStreak.currentStreakType == "Correct" {
+            backgroundColor = Color.green
+        } else {
+            backgroundColor = Color.red
+        }
+    }
+    
+    func createNewDeck() {
+        model.createNewGameDeck()
     }
 }
 
